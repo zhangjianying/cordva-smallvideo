@@ -25,12 +25,14 @@ showSmallVideo :开启小视频录制, android6.0以上第一次启动可能会�
   {
     dir :目录 , path:完整mp4路径
   }
-![Alt text](https://github.com/chenyufeng1991/NewsClient/raw/master/Screenshots/2.png)
 
+![Alt text](https://github.com/zhangjianying/cordva-smallvideo/raw/master/readme/1.jpg)
+ ![Alt text](https://github.com/zhangjianying/cordva-smallvideo/raw/master/readme/2.jpg)
 smallVieoDeleteDir: 删除视频存储目录
 
 
 
 smallVieoPathSize: 获取视频存储目录的大小
 
+![Alt text](https://github.com/zhangjianying/cordva-smallvideo/raw/master/readme/3.jpg)
 
