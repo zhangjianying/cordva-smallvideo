@@ -3,7 +3,7 @@
 
 
 基于FFmpeg项目的小视频录制插件,只有android端
-
+(请忽略项目名,少打一个字母)
 
 ```
 安装:  cordova plugin add https://github.com/zhangjianying/cordva-smallvideo.git
@@ -25,7 +25,7 @@ showSmallVideo :开启小视频录制, android6.0以上第一次启动可能会�
   {
     dir :目录 , path:完整mp4路径
   }
-
+![Alt text](https://github.com/chenyufeng1991/NewsClient/raw/master/Screenshots/2.png)
 
 smallVieoDeleteDir: 删除视频存储目录
 
