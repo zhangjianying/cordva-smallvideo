@@ -7,8 +7,8 @@ var smallvideo ={
 	smallVieoDeleteDir:function(info,success,error){  
 		exec(success, error, "SmallVideo", "smallVieoDeleteDir", [info]);  
 	},
-	smallVieoPathSize:function(info,success,error){  
-		exec(success, error, "SmallVideo", "smallVieoPathSize", [info]);  
+	smallVieoPathSize:function(success){
+		exec(success, function(){}, "SmallVideo", "smallVieoPathSize", []);
 	}
 }
 module.exports = smallvideo;  

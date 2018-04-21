@@ -6,14 +6,25 @@ xmlns:android="http://schemas.android.com/apk/res/android">
     <js-module name="smallvideo" src="www/smallvideo.js">
         <clobbers target="cordova.plugins.smallvideo" />
     </js-module>
+
+ 		<name>小视频插件</name>
+    <description>
+        Android端基于FFMpeg的视频录制插件
+    </description>
+    <license>MIT</license>
+
+		 <engines>
+        <engine name="cordova" version=">=6.0.0" />
+    </engines>
+		
 	<platform name="android">
 		
 		<source-file src="src/SmallVideo.java" 
-			target-dir="src/com/talkweb/smallvideo"/>
+			target-dir="src/com/zsoftware/smallvideo"/>
 			
 		<config-file target="res/xml/config.xml" parent="/*">
 		  <feature name="SmallVideo">
-			<param name="android-package" value="com.talkweb.smallvideo.SmallVideo"/>
+			<param name="android-package" value="com.zsoftware.smallvideo.SmallVideo"/>
 		  </feature>
 		</config-file>
 		
