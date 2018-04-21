@@ -28,6 +28,8 @@ showSmallVideo :开启小视频录制, android6.0以上第一次启动可能会�
 
 ![Alt text](https://github.com/zhangjianying/cordva-smallvideo/raw/master/readme/1.jpg)
  ![Alt text](https://github.com/zhangjianying/cordva-smallvideo/raw/master/readme/2.jpg)
+
+ 
 smallVieoDeleteDir: 删除视频存储目录
 
 
