@@ -39,8 +39,8 @@ public class SmallVideo extends CordovaPlugin {
         List<String> permissionsNeeded = new ArrayList<String>();
         final Activity context = this.activity;
         final List<String> permissionsList = new ArrayList<String>();
-        if (!addPermission(permissionsList, Manifest.permission.ACCESS_FINE_LOCATION))
-            permissionsNeeded.add("获取位置信息");
+        if (!addPermission(permissionsList, Manifest.permission.READ_EXTERNAL_STORAGE))
+            permissionsNeeded.add("读取扩展存储");
         if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE))
             permissionsNeeded.add("读写扩展存储");
         if (!addPermission(permissionsList, Manifest.permission.RECORD_AUDIO))
