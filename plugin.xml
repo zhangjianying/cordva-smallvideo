@@ -29,7 +29,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 		</config-file>
 		
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
-		  <activity android:name="com.mabeijianxi.smallvideorecord2.MediaRecorderActivity" />
+		  <activity android:name="com.mabeijianxi.smallvideorecord2.MediaRecorderActivity"  android:hardwareAccelerated="true"  />
 		</config-file>
 		
 		<config-file target="AndroidManifest.xml" parent="/manifest">

@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.mabeijianxi.smallvideorecord2.JianXiCamera;
@@ -18,6 +19,8 @@ import com.mabeijianxi.smallvideorecord2.model.MediaRecorderConfig;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PermissionHelper;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,57 +34,52 @@ import java.util.Map;
 public class SmallVideo extends CordovaPlugin {
     private Activity activity;
     private CallbackContext _callbackContext;
-    final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
-    private static Object LockObject = new Object();
+    private int videoTime = 0;
+    private String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.CAMERA,
+    };
 
-
-    private boolean checkPermission() {
-        List<String> permissionsNeeded = new ArrayList<String>();
-        final Activity context = this.activity;
-        final List<String> permissionsList = new ArrayList<String>();
-        if (!addPermission(permissionsList, Manifest.permission.READ_EXTERNAL_STORAGE))
-            permissionsNeeded.add("读取扩展存储");
-        if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE))
-            permissionsNeeded.add("读写扩展存储");
-        if (!addPermission(permissionsList, Manifest.permission.RECORD_AUDIO))
-            permissionsNeeded.add("录音");
-        if (!addPermission(permissionsList, Manifest.permission.CAMERA))
-            permissionsNeeded.add("拍照权限");
-
-        if (permissionsList.size() > 0) {
-            if (permissionsNeeded.size() > 0) {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-                    context.requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
-                            REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
-                }
+    /**
+     * check application's permissions
+     */
+    public boolean hasPermisssion() {
+        for (String p : permissions) {
+            if (!PermissionHelper.hasPermission(this, p)) {
                 return false;
             }
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-                context.requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
-                        REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
-            }
-            return false;
         }
         return true;
     }
 
-    private boolean addPermission(List<String> permissionsList, String permission) {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            return false;
-        }
-        if (this.activity.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-            permissionsList.add(permission);
-            // Check for Rationale Option
-            if (!this.activity.shouldShowRequestPermissionRationale(permission))
-                return false;
-        }
-        return true;
+    public void requestPermissions(int requestCode) {
+        PermissionHelper.requestPermissions(this, requestCode, permissions);
     }
 
-    private void showMessage(String message,
-                             DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(this.activity).setMessage(message)
-                .setPositiveButton("OK", okListener).create().show();
+    /**
+     * processes the result of permission request
+     *
+     * @param requestCode  The code to get request action
+     * @param permissions  The collection of permissions
+     * @param grantResults The result of grant
+     */
+    public void onRequestPermissionResult(int requestCode, String[] permissions,
+                                          int[] grantResults) throws JSONException {
+        PluginResult result;
+        for (int r : grantResults) {
+            if (r == PackageManager.PERMISSION_DENIED) {
+                result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
+                this._callbackContext.sendPluginResult(result);
+                return;
+            }
+        }
+
+        switch (requestCode) {
+            case 0:
+                toActiviey(this.videoTime);
+                break;
+        }
     }
 
 
@@ -98,12 +96,6 @@ public class SmallVideo extends CordovaPlugin {
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         activity = this.cordova.getActivity();
         this._callbackContext = callbackContext;
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            if (!checkPermission()) {
-                  _callbackContext.error("需要赋权才能使用");
-                return false;
-            }
-        }
 
         if ("showSmallVideo".equals(action)) {
             //拍摄小视频
@@ -119,7 +111,20 @@ public class SmallVideo extends CordovaPlugin {
                 }
             } catch (Exception e) {
             }
-            toActiviey(time);
+            final int videoMaxTime = time;
+            this.videoTime = videoMaxTime;
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (!hasPermisssion()) {
+                        requestPermissions(0);
+                    } else {
+                        toActiviey(videoMaxTime);
+                    }
+
+                }
+            });
+
             return true;
         } else if ("smallVieoDeleteDir".equals(action)) {
             //清空目录
@@ -188,7 +193,6 @@ public class SmallVideo extends CordovaPlugin {
                     ret.put("dir", dir);
                     ret.put("path", path);
                     ret.put("screenshotPath", hot);
-                    System.out.println(ret.toString());
                     _callbackContext.success(ret);
                     return;
                 } catch (JSONException e) {
