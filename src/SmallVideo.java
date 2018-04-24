@@ -100,6 +100,7 @@ public class SmallVideo extends CordovaPlugin {
         this._callbackContext = callbackContext;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             if (!checkPermission()) {
+                  _callbackContext.error("需要赋权才能使用");
                 return false;
             }
         }
